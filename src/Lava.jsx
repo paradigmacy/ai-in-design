@@ -52,7 +52,7 @@ export default function Lava({ kit, game, onTick, onStop, onClick }) {
   useFrame(({ clock }, dt) => {
     const g = game.current
     if (g.playing) {
-      g.lava = Math.min(g.stopAt, g.lava + LAVA_M_PER_S * g.speed * dt)
+      g.lava = Math.min(g.stopAt, g.lava + LAVA_M_PER_S * g.speed * (g.volcano ?? 1) * dt) // the volcano can speed it up or slow it down
       if (g.lava >= g.stopAt) {
         g.playing = false
         onStop(g.lava)

@@ -1,9 +1,11 @@
 // The page: loads the city kit, finds the walking route, runs the lava game, and shows the 3D map with its controls.
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 import City, { USE_COLOURS, HEIGHT_STEPS, HIGHLIGHT, Highlights, splitBuildings, useOf, heightStep } from './City.jsx'
 import CameraRig from './CameraRig.jsx'
+import Block, { MY_BLOCK, isMine } from './Block.jsx'
+import { useVolcano, VolcanoEffects, VolcanoPanel, VolcanoSays } from './Volcano.jsx'
 import Lava, { LAVA_M_PER_S } from './Lava.jsx'
 import { BAUHAUS, STATION, HALF_WIDTH_M, WALK_M_PER_MIN, toMetres, toWorld } from './geo.js'
 import { nearestNode, shortestRoute } from './route.js'
@@ -41,6 +43,7 @@ function cameraViews(routeMetres) {
     bauhaus: close(BAUHAUS),
     station: close(STATION),
     plan: { target: mid, pos: [mid[0], 1.25 * span, mid[2] + 1] }, // straight down, north at the top
+    block: { target: [168, 8, -297], pos: [298, 90, -137] }, // my Session 2 block, from the south-east
   }
 }
 
@@ -49,6 +52,7 @@ const VIEW_BUTTONS = [
   ['bauhaus', 'Bauhaus'],
   ['station', 'Station'],
   ['plan', 'Plan'],
+  ['block', 'My block'],
 ]
 
 export default function App() {
@@ -74,7 +78,9 @@ export default function App() {
         }),
       ),
     )
-      .then(([kit, buildings, streets, graph]) => setData({ kit, buildings, streets, graph }))
+      .then(([kit, buildings, streets, graph]) =>
+        setData({ kit, buildings: { ...buildings, features: [...buildings.features, MY_BLOCK] }, streets, graph }),
+      )
       .catch((e) => setError(e.message))
   }, [])
 
@@ -86,7 +92,8 @@ export default function App() {
     const route = shortestRoute(data.graph, start.node.id, end.node.id)
     if (!route) return { error: 'The street network has no route between the Bauhaus and the station.' }
     const routeMetres = route.line.map(toMetres)
-    const { inside, outside } = splitBuildings(data.buildings, routeMetres)
+    // My block is drawn by <Block> from block.glb, so the city leaves it out; it still counts for the jumps.
+    const { inside, outside } = splitBuildings({ ...data.buildings, features: data.buildings.features.filter((f) => !isMine(f)) }, routeMetres)
     const byUse = {}
     const byHeight = HEIGHT_STEPS.map(() => 0)
     for (const f of inside) {
@@ -126,6 +133,9 @@ export default function App() {
   }, [])
   const clearSelection = useCallback(() => setSelected(null), [])
 
+  // The volcano that thinks: watches the game, asks Claude (only on this laptop) and acts.
+  const volcano = useVolcano({ game, playing, stoppedAt, selected, targets, path })
+
   const play = () => {
     game.current.playing = !playing
     setPlaying(!playing)
@@ -140,6 +150,7 @@ export default function App() {
     setPlaying(false)
     setStoppedAt(null)
     setSelected(null) // hides the heights again
+    volcano.reset()
   }
 
   if (error) return <p className="message error">The city kit didn't load ({error}).</p>
@@ -168,10 +179,15 @@ export default function App() {
           onSelect={onSelect}
         />
         <Highlights selected={selected?.feature} targets={targets} path={path} />
+        <Suspense fallback={null}>
+          <Block onSelect={onSelect} />
+        </Suspense>
         <Lava kit={data.kit} game={game} onTick={onTick} onStop={onStop} onClick={clearSelection} />
+        <VolcanoEffects game={game} />
         <OrbitControls target={views.whole.target} maxPolarAngle={Math.PI / 2.1} makeDefault />
         <CameraRig views={views} view={view} />
       </Canvas>
+      <VolcanoSays volcano={volcano} />
 
       <aside className="panel">
         <section className="lava-tab">
@@ -197,6 +213,8 @@ export default function App() {
           ))}
           <button onClick={newGame}>↺ New game</button>
         </div>
+
+        <VolcanoPanel volcano={volcano} />
 
         {stoppedAt != null && (
           <p className={`outcome ${selected && selected.feature.properties.height > stoppedAt ? 'safe' : 'caught'}`}>

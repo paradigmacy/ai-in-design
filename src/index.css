@@ -397,3 +397,24 @@ body {
 .lava-tab .odds-bar span {
   background: linear-gradient(90deg, #17a398, #4fe0c8);
 }
+
+/* --- the volcano that thinks (Volcano.jsx) --- */
+.volcano { margin: 14px 0; padding: 10px 12px; border: 1px solid rgba(255, 110, 40, 0.45); border-radius: 8px; background: rgba(255, 90, 31, 0.08); }
+.volcano h3 { margin: 0 0 8px; font-size: 15px; }
+.volcano .thinking { font-weight: normal; font-size: 12px; opacity: 0.75; animation: volcano-pulse 1s ease-in-out infinite alternate; }
+@keyframes volcano-pulse { from { opacity: 0.35; } to { opacity: 1; } }
+.volcano-log { list-style: none; margin: 0; padding: 0; max-height: 280px; overflow-y: auto; }
+.volcano-entry { padding: 7px 0; border-top: 1px solid rgba(127, 127, 127, 0.25); }
+.volcano-entry:first-child { border-top: none; }
+.volcano-entry p { margin: 3px 0; }
+.volcano-head { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+.volcano-entry .badge { font-weight: 600; font-size: 13px; }
+.volcano-entry .say { font-style: italic; font-size: 14px; }
+.volcano-entry.speed_up .badge { color: #e8501b; }
+.volcano-entry.slow_down .badge { color: #3f8fd2; }
+.volcano-entry.mercy .badge, .volcano-entry .hint { color: #c99700; }
+.volcano-entry.error .badge { color: #c0392b; }
+.volcano-off { opacity: 0.8; }
+.volcano-says { position: fixed; top: 18px; left: 50%; transform: translateX(-50%); z-index: 20; max-width: 60vw; padding: 10px 18px; border-radius: 999px; background: rgba(30, 8, 4, 0.85); color: #ffd9a8; font-size: 18px; font-style: italic; box-shadow: 0 0 24px rgba(255, 90, 31, 0.6); pointer-events: none; }
+.volcano-says.speed_up { color: #ffb08a; }
+.volcano-says.mercy { color: #ffe680; }

@@ -208,6 +208,7 @@ function cachedGeometry(feature) {
 }
 
 function Highlight({ feature, colour }) {
+  if (feature.properties.mine) return null // my block is the glb model; no extruded box on top of it
   return (
     <mesh geometry={cachedGeometry(feature)}>
       <meshLambertMaterial color={colour} polygonOffset polygonOffsetFactor={-2} polygonOffsetUnits={-2} />

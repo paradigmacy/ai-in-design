@@ -1,0 +1,22 @@
+Turn this view of a 3D massing model into a photorealistic architectural photograph of the same scene.
+
+Keep the camera, the perspective and every building exactly as they are. Do not add, remove, move or reshape anything.
+
+What the colours in the model are:
+- cream solid floors: smooth light natural-stone facade of the main building
+- light blue transparent skin: a second, outer glass facade (double facade) in front of the upper floors
+- grey horizontal bands at every floor and the roof edge: brushed aluminium fins projecting past the glass
+- small white, cream, grey and rose tiles with dark diagonal stripes on two floors: a marble mosaic facade
+- dark blue glass on the ground floor behind a row of grey posts: a glazed lobby behind slim concrete columns, an open arcade
+- large triangular void in the facade: a multi-storey open loggia cut through the building, with planting (dark green) on its floor
+- green layer on the roof: an intensive green roof
+- off-white triangles on posts on the roof: tensioned fabric sun sails on slim steel masts
+- trees with white tops and small yellow dots: oak trees with a light cover of snow and warm LED fairy lights
+- light grey band around the building: stone paving
+- grey boxes with green blobs: concrete planters with low shrubs
+- brown wavy shapes: curved wooden benches
+- the coloured surrounding blocks: the existing buildings of central Weimar, plastered facades with windows, keep their massing
+
+Light: winter evening at blue hour, light fresh snow on the ground, warm interior lights glowing through the glass, the LED lights on the trees switched on.
+
+A few people for scale, in winter coats. Vertical lines stay vertical.
